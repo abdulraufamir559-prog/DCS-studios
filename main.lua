@@ -52,7 +52,59 @@ local CharacterData = {
     { name = "Healer", desc = "Holy magic, restores health.", hp = 100, mp = 150, magicElement = "Light", powers = { "Holy Cure", "Radiant Shield" } }
 }
 local selectedCharacter = nil
-local isNewGameStarted = false
+
+-- ==========================================
+-- MINECRAFT MODE INTERFACE (NEW FEATURE)
+-- ==========================================
+local function showMinecraftMode()
+  local mcLayout = LinearLayout(activity)
+  mcLayout.setOrientation(LinearLayout.VERTICAL)
+  mcLayout.setGravity(Gravity.CENTER)
+  mcLayout.setPadding(40, 40, 40, 40)
+  -- Minecraft Theme Colors (Dark Slate/Greenish tint)
+  mcLayout.setBackgroundColor(0xFF2E2E2E)
+
+  local mcTitle = TextView(activity)
+  mcTitle.setText("MINECRAFT LUA EDITION")
+  mcTitle.setTextSize(26)
+  mcTitle.setTextColor(0xFF4CAF50) -- Minecraft Green
+  mcTitle.setGravity(Gravity.CENTER)
+  mcTitle.setPadding(0, 0, 0, 50)
+  mcLayout.addView(mcTitle)
+
+  local btnCreateWorld = Button(activity)
+  btnCreateWorld.setText("âœ’ï¸ Create New World")
+  btnCreateWorld.setOnClickListener(function()
+    print("Minecraft Engine: Generating terrain chunks and seeds...")
+    Toast.makeText(activity, "World Generated Successfully!", Toast.LENGTH_SHORT).show()
+  end)
+  mcLayout.addView(btnCreateWorld)
+
+  local btnSurvival = Button(activity)
+  btnSurvival.setText("âš”ï¸ Survival Mode")
+  btnSurvival.setOnClickListener(function()
+    print("Minecraft Engine: Survival Mode Active. Hearts and Hunger synced.")
+    Toast.makeText(activity, "Survival Mode Started! Watch out for Creepers.", Toast.LENGTH_SHORT).show()
+  end)
+  mcLayout.addView(btnSurvival)
+
+  local btnCreative = Button(activity)
+  btnCreative.setText("â˜ ï¸ Creative Mode")
+  btnCreative.setOnClickListener(function()
+    print("Minecraft Engine: Creative Mode Active. Unlimited blocks allowed.")
+    Toast.makeText(activity, "Creative Mode Started! Flying enabled.", Toast.LENGTH_SHORT).show()
+  end)
+  mcLayout.addView(btnCreative)
+
+  local btnBack = Button(activity)
+  btnBack.setText("Back to Main Menu")
+  btnBack.setOnClickListener(function() 
+    showMainMenu() 
+  end)
+  mcLayout.addView(btnBack)
+
+  activity.setContentView(mcLayout)
+end
 
 -- ==========================================
 -- TEXT TO SPEECH (TTS) SYSTEM
@@ -631,7 +683,6 @@ local function showSettingsScreen()
   end)
   setLayout.addView(btnEditName)
 
-  -- NAYA BUTTON: RESET PROFILE DATA ONLY (Clears only user profile name)
   local btnResetProfile = Button(activity)
   btnResetProfile.setText("Reset Profile Data")
   btnResetProfile.setOnClickListener(function()
@@ -812,7 +863,7 @@ function showMainMenu()
   btnGameMenu.setOnClickListener(function()
     local modeDialog = AlertDialog.Builder(activity)
     modeDialog.setTitle("Select Game Mode")
-    modeDialog.setMessage("Choose how you want to play the 99 Card Game:")
+    modeDialog.setMessage("Choose how you want to play:")
     
     modeDialog.setPositiveButton("Offline (Vs Computer)", DialogInterface.OnClickListener({
       onClick = function(d, w)
@@ -823,6 +874,13 @@ function showMainMenu()
     modeDialog.setNegativeButton("ðŸŒ Online Multiplayer", DialogInterface.OnClickListener({
       onClick = function(d, w)
         showMultiplayerLobby()                 
+      end
+    }))
+    
+    -- Minecraft Mode trigger added safely into selection flow
+    modeDialog.setNeutralButton("â› Minecraft Mode", DialogInterface.OnClickListener({
+      onClick = function(d, w)
+        showMinecraftMode()
       end
     }))
     
